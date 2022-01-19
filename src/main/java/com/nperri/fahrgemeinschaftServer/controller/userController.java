@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,6 +21,28 @@ public class userController {
         userRepository.save(user);
     }
 
+    @GetMapping("")
+    public List<User> getUsers(){
+        return (List<User>) userRepository.findAll();
+    }
+
+    @PostMapping("/login")
+    public User loginUser(@RequestBody User bodyUser ){
+        String username = bodyUser.getUsername();
+      Optional<User> bufferUser = userRepository.findById(username);
+
+      if(bufferUser.isEmpty()){
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User with this username was not found");
+      }
+      User user = bufferUser.get();
+      String bufferPass=bodyUser.getPassword();
+      if(!bufferPass.equals(user.getPassword()))
+          throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT,"Password does not match");
+
+      return user;
+
+    }
+
     @GetMapping("/{username}")
     public User getFromUsername(@PathVariable String username){
         Optional<User> user= userRepository.findById(username);
@@ -32,7 +55,7 @@ public class userController {
     @PutMapping("/{username}")
     public void updateUser(@PathVariable String username,@RequestBody User userUpdate){
         Optional<User> user= userRepository.findById(username);
-        if(!user.isPresent())
+        if(user.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Product with this username not found");
 
         User userInstance = user.get();
