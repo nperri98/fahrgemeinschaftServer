@@ -16,9 +16,15 @@ public class userController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping
-    public void createUser(@RequestBody User user){
-        userRepository.save(user);
+    @PostMapping("")
+    public User createUser(@RequestBody User user) throws ResponseStatusException {
+        Optional<User> bufferUser= userRepository.findById(user.getUsername());
+        if(bufferUser.isEmpty()) {
+            userRepository.save(user);
+            return user;
+        }else {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"User already exists");
+        }
     }
 
     @GetMapping("")
@@ -27,7 +33,7 @@ public class userController {
     }
 
     @PostMapping("/login")
-    public User loginUser(@RequestBody User bodyUser ){
+    public User loginUser(@RequestBody User bodyUser ) throws ResponseStatusException {
         String username = bodyUser.getUsername();
       Optional<User> bufferUser = userRepository.findById(username);
 
@@ -44,7 +50,7 @@ public class userController {
     }
 
     @GetMapping("/{username}")
-    public User getFromUsername(@PathVariable String username){
+    public User getFromUsername(@PathVariable String username) throws ResponseStatusException {
         Optional<User> user= userRepository.findById(username);
         if(user.isPresent()) {
           return user.get();
@@ -53,10 +59,11 @@ public class userController {
     }
 
     @PutMapping("/{username}")
-    public void updateUser(@PathVariable String username,@RequestBody User userUpdate){
+    public void updateUser(@PathVariable String username,@RequestBody User userUpdate) throws ResponseStatusException {
         Optional<User> user= userRepository.findById(username);
-        if(user.isEmpty())
+        if(user.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Product with this username not found");
+        }
 
         User userInstance = user.get();
 
@@ -73,7 +80,7 @@ public class userController {
     }
 
     @DeleteMapping("/{username}")
-    public void deleteUser(@PathVariable String username){
+    public void deleteUser(@PathVariable String username) throws ResponseStatusException {
         Optional<User> user= userRepository.findById(username);
         if(user.isPresent()) {
             userRepository.deleteById(username);
