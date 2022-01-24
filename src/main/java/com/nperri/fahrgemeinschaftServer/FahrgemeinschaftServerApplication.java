@@ -1,14 +1,18 @@
 package com.nperri.fahrgemeinschaftServer;
 
+import com.nperri.fahrgemeinschaftServer.entity.Carpool;
 import com.nperri.fahrgemeinschaftServer.entity.User;
 import com.nperri.fahrgemeinschaftServer.help.Sha256;
+import com.nperri.fahrgemeinschaftServer.repository.CarpoolRepository;
 import com.nperri.fahrgemeinschaftServer.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootApplication
 public class FahrgemeinschaftServerApplication {
@@ -46,6 +50,14 @@ public class FahrgemeinschaftServerApplication {
 		 userRepository.save(nperri);
 		 userRepository.save(userTest);
 
+		 Carpool firstCarpool = new Carpool();
+		 firstCarpool.setDriverEmail("test@carpoolSchool.com");
+		 firstCarpool.setDriver("test");
+		 firstCarpool.setDeparturePointCityCode(66333);
+		 firstCarpool.setDeparturePointCity("Voelklingen");
+
+		CarpoolRepository carpoolRepository=applicationContext.getBean(CarpoolRepository.class);
+		carpoolRepository.save(firstCarpool);
 	}
 
 
