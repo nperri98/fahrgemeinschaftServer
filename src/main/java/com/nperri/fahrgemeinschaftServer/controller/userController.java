@@ -20,6 +20,7 @@ public class userController {
     public User createUser(@RequestBody User user) throws ResponseStatusException {
         Optional<User> bufferUser= userRepository.findById(user.getUsername());
         if(bufferUser.isEmpty()) {
+
             userRepository.save(user);
             return user;
         }else {
@@ -46,7 +47,6 @@ public class userController {
           throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT,"Password does not match");
 
       return user;
-
     }
 
     @GetMapping("/{username}")

@@ -51,8 +51,6 @@ public class FahrgemeinschaftServerApplication {
 		 userRepository.save(userTest);
 
 		 Carpool firstCarpool = new Carpool();
-		 firstCarpool.setDriverEmail("test@carpoolSchool.com");
-		 firstCarpool.setDriver("test");
 		 firstCarpool.setDeparturePointCityCode(66333);
 		 firstCarpool.setDeparturePointCity("Voelklingen");
 

@@ -1,7 +1,12 @@
 package com.nperri.fahrgemeinschaftServer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -9,8 +14,8 @@ public class User {
 
 
     @Id
+    @Column(name = "id")
     private String username;
-
     private String surname;
     private String firstName;
     private String password;
@@ -21,6 +26,16 @@ public class User {
     private Boolean teacher;
 
 
+
+
+@JsonIgnore
+@ManyToMany(mappedBy = "passengers",cascade = CascadeType.ALL)
+private Set<Carpool> carpools=new HashSet<>();
+
+
+
+
+    //GETTER AND SETTER
 
 
 
@@ -94,5 +109,14 @@ public class User {
 
     public void setTeacher(Boolean teacher) {
         this.teacher = teacher;
+    }
+
+    public int bookIn(Carpool carpool) {
+        if(carpool.getPassengers().size()<carpool.getMaxPassangers()){
+            carpools.add(carpool);
+            return 1;
+        }else{
+            return 0;
+        }
     }
 }
